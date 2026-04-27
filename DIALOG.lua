@@ -67,6 +67,19 @@ task.spawn(function()
     end
 end)
 
+    -- 🖼 AVATAR IMAGE (ADD THIS)
+local avatar = Instance.new("ImageLabel")
+avatar.Parent = frame
+avatar.Size = UDim2.new(0, 50, 0, 50)
+avatar.Position = UDim2.new(0.05, 0, 0.05, 0)
+avatar.BackgroundTransparency = 1
+
+avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId="
+    ..player.UserId..
+    "&width=420&height=420&format=png"
+
+Instance.new("UICorner", avatar).CornerRadius = UDim.new(1,0)
+
 -- 👤 PROFILE TEXT
 local profile = Instance.new("TextLabel")
 profile.Parent = frame
