@@ -14,67 +14,124 @@ end
 
 function lib:init(ti, dosplash, visiblekey, deleteprevious)
 
-    -- =========================
-    -- 🔐 KEY SYSTEM (PLACE HERE)
-    -- =========================
+  -- =========================
+-- 🍎 APPLE STYLE KEY SYSTEM
+-- =========================
 
-    local correctKey = "SophiaDeveloperHub"
-    local keyAccepted = false
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
-    local keyGui = Instance.new("ScreenGui")
-    keyGui.Name = "KeySystem"
-    keyGui.Parent = game:GetService("CoreGui")
+local correctKey = "SophiaDeveloperHub"
+local keyAccepted = false
 
-    local frame = Instance.new("Frame")
-    frame.Parent = keyGui
-    frame.Size = UDim2.new(0, 320, 0, 200)
-    frame.Position = UDim2.new(0.5, -160, 0.5, -100)
-    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+local keyGui = Instance.new("ScreenGui")
+keyGui.Name = "KeySystem"
+keyGui.Parent = game:GetService("CoreGui")
 
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+-- 🌫 Background blur feel
+local bg = Instance.new("Frame")
+bg.Parent = keyGui
+bg.Size = UDim2.new(1,0,1,0)
+bg.BackgroundColor3 = Color3.fromRGB(0,0,0)
+bg.BackgroundTransparency = 0.4
 
-    local title = Instance.new("TextLabel")
-    title.Parent = frame
-    title.Size = UDim2.new(1,0,0,40)
-    title.BackgroundTransparency = 1
-    title.Text = "🔐 Key System"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(255,255,255)
+-- 🍎 Main Card
+local frame = Instance.new("Frame")
+frame.Parent = keyGui
+frame.Size = UDim2.new(0, 360, 0, 260)
+frame.Position = UDim2.new(0.5, -180, 0.5, -130)
+frame.BackgroundColor3 = Color3.fromRGB(245,245,245)
 
-    local box = Instance.new("TextBox")
-    box.Parent = frame
-    box.Size = UDim2.new(0.8,0,0,35)
-    box.Position = UDim2.new(0.1,0,0.4,0)
-    box.PlaceholderText = "Enter Key..."
-    box.Text = ""
-    box.Font = Enum.Font.Gotham
-    box.TextSize = 18
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
 
-    local submit = Instance.new("TextButton")
-    submit.Parent = frame
-    submit.Size = UDim2.new(0.8,0,0,35)
-    submit.Position = UDim2.new(0.1,0,0.7,0)
-    submit.Text = "Unlock"
-    submit.BackgroundColor3 = Color3.fromRGB(21,103,251)
-    submit.TextColor3 = Color3.fromRGB(255,255,255)
-    submit.Font = Enum.Font.Gotham
+-- 👤 Profile
+local profile = Instance.new("TextLabel")
+profile.Parent = frame
+profile.Size = UDim2.new(1,0,0,50)
+profile.BackgroundTransparency = 1
+profile.Font = Enum.Font.GothamMedium
+profile.TextSize = 16
+profile.TextColor3 = Color3.fromRGB(40,40,40)
+profile.Text = "👤 "..player.Name.."  |  UID: "..player.UserId
 
-    Instance.new("UICorner", submit).CornerRadius = UDim.new(0,8)
+-- 🔐 Title
+local title = Instance.new("TextLabel")
+title.Parent = frame
+title.Size = UDim2.new(1,0,0,40)
+title.Position = UDim2.new(0,0,0.2,0)
+title.BackgroundTransparency = 1
+title.Text = "Enter Access Key"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(20,20,20)
 
-    submit.MouseButton1Click:Connect(function()
-        if box.Text == correctKey then
-            keyAccepted = true
-            keyGui:Destroy()
-        else
-            box.Text = ""
-            box.PlaceholderText = "Wrong Key!"
-        end
-    end)
+-- ⌨️ Input Box
+local box = Instance.new("TextBox")
+box.Parent = frame
+box.Size = UDim2.new(0.85,0,0,40)
+box.Position = UDim2.new(0.075,0,0.45,0)
+box.PlaceholderText = "Paste your key..."
+box.Text = ""
+box.Font = Enum.Font.Gotham
+box.TextSize = 18
+box.BackgroundColor3 = Color3.fromRGB(230,230,230)
 
-    -- ⛔ BLOCK EVERYTHING UNTIL KEY IS CORRECT
-    repeat task.wait() until keyAccepted
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,10)
 
+-- ❌ Error Label
+local errorLabel = Instance.new("TextLabel")
+errorLabel.Parent = frame
+errorLabel.Size = UDim2.new(1,0,0,20)
+errorLabel.Position = UDim2.new(0,0,0.65,0)
+errorLabel.BackgroundTransparency = 1
+errorLabel.Text = ""
+errorLabel.TextColor3 = Color3.fromRGB(255,60,60)
+errorLabel.Font = Enum.Font.Gotham
+errorLabel.TextSize = 14
+
+-- 🔓 Unlock Button
+local submit = Instance.new("TextButton")
+submit.Parent = frame
+submit.Size = UDim2.new(0.4,0,0,40)
+submit.Position = UDim2.new(0.08,0,0.75,0)
+submit.Text = "Unlock"
+submit.BackgroundColor3 = Color3.fromRGB(0,122,255)
+submit.TextColor3 = Color3.fromRGB(255,255,255)
+submit.Font = Enum.Font.GothamBold
+
+Instance.new("UICorner", submit).CornerRadius = UDim.new(0,12)
+
+-- 🔗 Discord Button
+local discord = Instance.new("TextButton")
+discord.Parent = frame
+discord.Size = UDim2.new(0.4,0,0,40)
+discord.Position = UDim2.new(0.52,0,0.75,0)
+discord.Text = "Get Key"
+discord.BackgroundColor3 = Color3.fromRGB(88,101,242)
+discord.TextColor3 = Color3.fromRGB(255,255,255)
+discord.Font = Enum.Font.GothamBold
+
+Instance.new("UICorner", discord).CornerRadius = UDim.new(0,12)
+
+-- 🔗 Discord action
+discord.MouseButton1Click:Connect(function()
+    setclipboard("https://discord.gg/YOUR_LINK_HERE")
+    errorLabel.Text = "Discord link copied!"
+end)
+
+-- 🔐 Key check
+submit.MouseButton1Click:Connect(function()
+    if box.Text == correctKey then
+        keyAccepted = true
+        keyGui:Destroy()
+    else
+        errorLabel.Text = "Invalid key. Try again."
+        box.Text = ""
+    end
+end)
+
+-- ⛔ WAIT
+repeat task.wait() until keyAccepted
     -- =========================
     -- AFTER THIS = YOUR UI LOADS
     -- =========================
