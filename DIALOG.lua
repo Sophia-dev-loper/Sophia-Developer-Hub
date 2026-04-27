@@ -233,7 +233,7 @@ repeat task.wait() until keyAccepted
         ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)), -- light blue
         ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 255)) -- purple-ish
     }
-    grad.Rotation = 90
+    grad.Rotation = 50
 
         task.spawn(function()
     while splash.Parent do
@@ -249,8 +249,7 @@ end)
         uc_22.Parent = splash
 
 
- local sicon = Instance.new("TextLabel")  
-local sp = Instance.new("Frame")
+local sicon = Instance.new("TextLabel")
 sicon.Name = "sicon"
 sicon.Parent = splash
 sicon.Size = UDim2.new(1, 0, 1, 0)
@@ -261,24 +260,23 @@ sicon.BackgroundTransparency = 1
 sicon.Text = "SOPHIADEVELOPER"
 sicon.Font = Enum.Font.GothamBold
 sicon.TextSize = 36
-sicon.TextColor3 = Color3.fromRGB(255, 255, 255)
 sicon.TextWrapped = true
+sicon.TextColor3 = Color3.fromRGB(255, 255, 255) -- base color (required)
 
-          local grad = Instance.new("UIGradient")
-    grad.Parent = sp
-    grad.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), -- white
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)), -- light blue
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 255)) -- purple-ish
-    }
-    grad.Rotation = 90
+-- 🌈 TEXT GRADIENT (CORRECT PARENT)
+local grad = Instance.new("UIGradient")
+grad.Parent = sicon
+grad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 255))
+}
+grad.Rotation = 50
 
         task.spawn(function()
-    while splash.Parent do
-        for i = 0, 1, 0.01 do
-            grad.Rotation = i * 360
-            task.wait()
-        end
+    while sicon.Parent do
+        grad.Rotation = (grad.Rotation + 1) % 360
+        task.wait(0.02)
     end
 end)
 
