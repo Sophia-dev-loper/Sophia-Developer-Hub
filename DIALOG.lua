@@ -267,9 +267,9 @@ sicon.TextColor3 = Color3.fromRGB(255, 255, 255) -- base color (required)
 local grad = Instance.new("UIGradient")
 grad.Parent = sicon
 grad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 255))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 200, 200)), -- light grey
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)), -- white
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0)) -- black
 }
 grad.Rotation = 50
 
