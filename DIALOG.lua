@@ -385,54 +385,73 @@ end)
     function sec:Dropdown(name, list, callback)
     local Players = game:GetService("Players")
 
+    local items = {}
     local selected = nil
-    local items = list or {}
 
-    local dropdown = Instance.new("Frame")
-    dropdown.Parent = workareamain
-    dropdown.Size = UDim2.new(0, 418, 0, 60)
-    dropdown.BackgroundTransparency = 1
+    local holder = Instance.new("Frame")
+    holder.Parent = workareamain
+    holder.Size = UDim2.new(0, 418, 0, 40)
+    holder.BackgroundTransparency = 1
 
-    local label = Instance.new("TextLabel")
-    label.Parent = dropdown
-    label.Size = UDim2.new(1, 0, 0, 25)
-    label.BackgroundTransparency = 1
-    label.Font = Enum.Font.Gotham
-    label.Text = name .. ": None"
-    label.TextColor3 = Color3.fromRGB(95,95,95)
-    label.TextSize = 20
-    label.TextXAlignment = Enum.TextXAlignment.Left
+    local title = Instance.new("TextLabel")
+    title.Parent = holder
+    title.Size = UDim2.new(0.7, 0, 1, 0)
+    title.BackgroundTransparency = 1
+    title.Font = Enum.Font.Gotham
+    title.Text = name .. ": None"
+    title.TextColor3 = Color3.fromRGB(95,95,95)
+    title.TextSize = 20
+    title.TextXAlignment = Enum.TextXAlignment.Left
 
-    local box = Instance.new("TextBox")
-    box.Parent = dropdown
-    box.Position = UDim2.new(0, 0, 0, 30)
-    box.Size = UDim2.new(1, 0, 0, 30)
-    box.PlaceholderText = "Search player..."
-    box.Text = ""
-    box.Font = Enum.Font.Gotham
-    box.TextSize = 18
-    box.BackgroundColor3 = Color3.fromRGB(240,240,240)
-    box.TextColor3 = Color3.fromRGB(0,0,0)
+    local button = Instance.new("TextButton")
+    button.Parent = holder
+    button.Size = UDim2.new(0.3, 0, 1, 0)
+    button.Position = UDim2.new(0.7, 0, 0, 0)
+    button.Text = "▼"
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 18
+    button.BackgroundColor3 = Color3.fromRGB(21,103,251)
+    button.TextColor3 = Color3.fromRGB(255,255,255)
 
-    Instance.new("UICorner", box).CornerRadius = UDim.new(0,8)
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0,6)
 
-    local listFrame = Instance.new("ScrollingFrame")
-    listFrame.Parent = dropdown
-    listFrame.Position = UDim2.new(0, 0, 0, 65)
-    listFrame.Size = UDim2.new(1, 0, 0, 120)
-    listFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
-    listFrame.Visible = false
-    listFrame.CanvasSize = UDim2.new(0,0,0,0)
-    listFrame.ScrollBarThickness = 4
+    -- dropdown frame (IMPORTANT FIX: parent = workarea, NOT inside scrolling text flow)
+    local drop = Instance.new("Frame")
+    drop.Parent = workarea
+    drop.Size = UDim2.new(0, 250, 0, 150)
+    drop.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    drop.Visible = false
+    drop.ZIndex = 50
 
-    Instance.new("UICorner", listFrame).CornerRadius = UDim.new(0,8)
+    Instance.new("UICorner", drop).CornerRadius = UDim.new(0,8)
 
-    local layout = Instance.new("UIListLayout", listFrame)
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    local search = Instance.new("TextBox")
+    search.Parent = drop
+    search.Size = UDim2.new(1, -10, 0, 30)
+    search.Position = UDim2.new(0,5,0,5)
+    search.PlaceholderText = "Search..."
+    search.Text = ""
+    search.Font = Enum.Font.Gotham
+    search.TextSize = 16
+    search.BackgroundColor3 = Color3.fromRGB(240,240,240)
+    search.TextColor3 = Color3.fromRGB(0,0,0)
 
-    local function refreshList(filter)
-        listFrame:ClearAllChildren()
-        layout.Parent = listFrame
+    Instance.new("UICorner", search).CornerRadius = UDim.new(0,6)
+
+    local scroll = Instance.new("ScrollingFrame")
+    scroll.Parent = drop
+    scroll.Position = UDim2.new(0,5,0,40)
+    scroll.Size = UDim2.new(1,-10,1,-45)
+    scroll.BackgroundTransparency = 1
+    scroll.ScrollBarThickness = 3
+    scroll.CanvasSize = UDim2.new(0,0,0,0)
+
+    local layout = Instance.new("UIListLayout", scroll)
+    layout.Padding = UDim.new(0,4)
+
+    local function refresh(filter)
+        scroll:ClearAllChildren()
+        layout.Parent = scroll
 
         local count = 0
 
@@ -440,19 +459,19 @@ end)
             if filter == "" or string.find(string.lower(v), string.lower(filter)) then
                 count += 1
 
-                local btn = Instance.new("TextButton")
-                btn.Parent = listFrame
-                btn.Size = UDim2.new(1,0,0,30)
-                btn.Text = v
-                btn.Font = Enum.Font.Gotham
-                btn.TextSize = 18
-                btn.BackgroundTransparency = 1
-                btn.TextColor3 = Color3.fromRGB(50,50,50)
+                local b = Instance.new("TextButton")
+                b.Parent = scroll
+                b.Size = UDim2.new(1,0,0,25)
+                b.Text = v
+                b.Font = Enum.Font.Gotham
+                b.TextSize = 16
+                b.BackgroundTransparency = 1
+                b.TextColor3 = Color3.fromRGB(50,50,50)
 
-                btn.MouseButton1Click:Connect(function()
+                b.MouseButton1Click:Connect(function()
                     selected = v
-                    label.Text = name .. ": " .. v
-                    listFrame.Visible = false
+                    title.Text = name .. ": " .. v
+                    drop.Visible = false
 
                     if callback then
                         callback(v)
@@ -461,32 +480,31 @@ end)
             end
         end
 
-        listFrame.CanvasSize = UDim2.new(0,0,0,count*30)
+        scroll.CanvasSize = UDim2.new(0,0,0,count * 28)
     end
 
-    -- toggle dropdown
-    box.Focused:Connect(function()
-        listFrame.Visible = true
-        refreshList(box.Text)
+    button.MouseButton1Click:Connect(function()
+        drop.Visible = not drop.Visible
+        refresh(search.Text)
     end)
 
-    box:GetPropertyChangedSignal("Text"):Connect(function()
-        refreshList(box.Text)
+    search:GetPropertyChangedSignal("Text"):Connect(function()
+        refresh(search.Text)
     end)
 
-    -- 🔥 AUTO PLAYER UPDATE
-    local function updatePlayers()
+    -- AUTO UPDATE PLAYERS 🔥
+    local function update()
         items = {}
-        for _,plr in pairs(Players:GetPlayers()) do
-            table.insert(items, plr.Name)
+        for _,p in pairs(Players:GetPlayers()) do
+            table.insert(items, p.Name)
         end
-        refreshList(box.Text)
+        refresh(search.Text)
     end
 
-    Players.PlayerAdded:Connect(updatePlayers)
-    Players.PlayerRemoving:Connect(updatePlayers)
+    Players.PlayerAdded:Connect(update)
+    Players.PlayerRemoving:Connect(update)
 
-    updatePlayers() -- initial load
+    update()
 end
 
     
