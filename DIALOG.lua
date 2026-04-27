@@ -99,7 +99,77 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
         splash:TweenPosition(UDim2.new(0.5, 0, 2, 0), "InOut", "Quart", 1)
         game:GetService("Debris"):AddItem(splash, 1)
     end
-        
+
+    -- =========================
+-- 🔐 KEY SYSTEM
+-- =========================
+
+local correctKey = "SophiaDeveloperHub" -- change this
+local keyAccepted = false
+
+local keyFrame = Instance.new("Frame")
+keyFrame.Parent = scrgui
+keyFrame.Size = UDim2.new(0, 300, 0, 180)
+keyFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+keyFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+
+Instance.new("UICorner", keyFrame).CornerRadius = UDim.new(0,12)
+
+local title = Instance.new("TextLabel")
+title.Parent = keyFrame
+title.Size = UDim2.new(1,0,0,40)
+title.Text = "Key System"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.BackgroundTransparency = 1
+
+local box = Instance.new("TextBox")
+box.Parent = keyFrame
+box.Size = UDim2.new(0.8,0,0,35)
+box.Position = UDim2.new(0.1,0,0.35,0)
+box.PlaceholderText = "Enter Key..."
+box.Text = ""
+box.Font = Enum.Font.Gotham
+box.TextSize = 18
+
+local submit = Instance.new("TextButton")
+submit.Parent = keyFrame
+submit.Size = UDim2.new(0.8,0,0,35)
+submit.Position = UDim2.new(0.1,0,0.65,0)
+submit.Text = "Submit"
+submit.BackgroundColor3 = Color3.fromRGB(21,103,251)
+submit.TextColor3 = Color3.new(1,1,1)
+submit.Font = Enum.Font.Gotham
+
+Instance.new("UICorner", submit).CornerRadius = UDim.new(0,8)
+
+-- DISCORD BUTTON
+local discord = Instance.new("TextButton")
+discord.Parent = keyFrame
+discord.Size = UDim2.new(0.8,0,0,25)
+discord.Position = UDim2.new(0.1,0,0.85,0)
+discord.Text = "Get Key (Discord)"
+discord.BackgroundColor3 = Color3.fromRGB(114,137,218)
+discord.TextColor3 = Color3.new(1,1,1)
+discord.Font = Enum.Font.Gotham
+
+discord.MouseButton1Click:Connect(function()
+    setclipboard("https://discord.gg/YOURSERVER") -- 🔥 change link
+end)
+
+-- CHECK KEY
+submit.MouseButton1Click:Connect(function()
+    if box.Text == correctKey then
+        keyAccepted = true
+        keyFrame:Destroy()
+    else
+        box.Text = ""
+        box.PlaceholderText = "Wrong Key!"
+    end
+end)
+
+-- WAIT UNTIL KEY IS CORRECT
+repeat task.wait() until keyAccepted
 
     local main = Instance.new("Frame")
     main.Name = "main"
