@@ -381,132 +381,7 @@ end)
         searchtextbox:CaptureFocus()
     end)
 
-   -- drapdowm
-    function sec:Dropdown(name, list, callback)
-    local Players = game:GetService("Players")
-
-    local items = {}
-    local selected = nil
-
-    local holder = Instance.new("Frame")
-    holder.Parent = workareamain
-    holder.Size = UDim2.new(0, 418, 0, 40)
-    holder.BackgroundTransparency = 1
-
-    local title = Instance.new("TextLabel")
-    title.Parent = holder
-    title.Size = UDim2.new(0.7, 0, 1, 0)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.Gotham
-    title.Text = name .. ": None"
-    title.TextColor3 = Color3.fromRGB(95,95,95)
-    title.TextSize = 20
-    title.TextXAlignment = Enum.TextXAlignment.Left
-
-    local button = Instance.new("TextButton")
-    button.Parent = holder
-    button.Size = UDim2.new(0.3, 0, 1, 0)
-    button.Position = UDim2.new(0.7, 0, 0, 0)
-    button.Text = "▼"
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 18
-    button.BackgroundColor3 = Color3.fromRGB(21,103,251)
-    button.TextColor3 = Color3.fromRGB(255,255,255)
-
-    Instance.new("UICorner", button).CornerRadius = UDim.new(0,6)
-
-    -- dropdown frame (IMPORTANT FIX: parent = workarea, NOT inside scrolling text flow)
-    local drop = Instance.new("Frame")
-    drop.Parent = workarea
-    drop.Size = UDim2.new(0, 250, 0, 150)
-    drop.BackgroundColor3 = Color3.fromRGB(255,255,255)
-    drop.Visible = false
-    drop.ZIndex = 50
-
-    Instance.new("UICorner", drop).CornerRadius = UDim.new(0,8)
-
-    local search = Instance.new("TextBox")
-    search.Parent = drop
-    search.Size = UDim2.new(1, -10, 0, 30)
-    search.Position = UDim2.new(0,5,0,5)
-    search.PlaceholderText = "Search..."
-    search.Text = ""
-    search.Font = Enum.Font.Gotham
-    search.TextSize = 16
-    search.BackgroundColor3 = Color3.fromRGB(240,240,240)
-    search.TextColor3 = Color3.fromRGB(0,0,0)
-
-    Instance.new("UICorner", search).CornerRadius = UDim.new(0,6)
-
-    local scroll = Instance.new("ScrollingFrame")
-    scroll.Parent = drop
-    scroll.Position = UDim2.new(0,5,0,40)
-    scroll.Size = UDim2.new(1,-10,1,-45)
-    scroll.BackgroundTransparency = 1
-    scroll.ScrollBarThickness = 3
-    scroll.CanvasSize = UDim2.new(0,0,0,0)
-
-    local layout = Instance.new("UIListLayout", scroll)
-    layout.Padding = UDim.new(0,4)
-
-    local function refresh(filter)
-        scroll:ClearAllChildren()
-        layout.Parent = scroll
-
-        local count = 0
-
-        for _,v in pairs(items) do
-            if filter == "" or string.find(string.lower(v), string.lower(filter)) then
-                count += 1
-
-                local b = Instance.new("TextButton")
-                b.Parent = scroll
-                b.Size = UDim2.new(1,0,0,25)
-                b.Text = v
-                b.Font = Enum.Font.Gotham
-                b.TextSize = 16
-                b.BackgroundTransparency = 1
-                b.TextColor3 = Color3.fromRGB(50,50,50)
-
-                b.MouseButton1Click:Connect(function()
-                    selected = v
-                    title.Text = name .. ": " .. v
-                    drop.Visible = false
-
-                    if callback then
-                        callback(v)
-                    end
-                end)
-            end
-        end
-
-        scroll.CanvasSize = UDim2.new(0,0,0,count * 28)
-    end
-
-    button.MouseButton1Click:Connect(function()
-        drop.Visible = not drop.Visible
-        refresh(search.Text)
-    end)
-
-    search:GetPropertyChangedSignal("Text"):Connect(function()
-        refresh(search.Text)
-    end)
-
-    -- AUTO UPDATE PLAYERS 🔥
-    local function update()
-        items = {}
-        for _,p in pairs(Players:GetPlayers()) do
-            table.insert(items, p.Name)
-        end
-        refresh(search.Text)
-    end
-
-    Players.PlayerAdded:Connect(update)
-    Players.PlayerRemoving:Connect(update)
-
-    update()
-end
-
+ 
     
     -- sidebar
 
@@ -546,6 +421,82 @@ end
             end
         end
     end)
+
+     -- 🔥 FIXED DROPDOWN
+        function sec:Dropdown(name, callback)
+
+            local items = {}
+            local selected = nil
+
+            local holder = Instance.new("Frame")
+            holder.Parent = workareamain
+            holder.Size = UDim2.new(1,0,0,40)
+
+            local title = Instance.new("TextLabel", holder)
+            title.Size = UDim2.new(0.7,0,1,0)
+            title.Text = name .. ": None"
+
+            local btn = Instance.new("TextButton", holder)
+            btn.Size = UDim2.new(0.3,0,1,0)
+            btn.Position = UDim2.new(0.7,0,0,0)
+            btn.Text = "▼"
+
+            local drop = Instance.new("Frame")
+            drop.Parent = workareamain
+            drop.Size = UDim2.new(1,0,0,150)
+            drop.Visible = false
+
+            local searchBox = Instance.new("TextBox", drop)
+            searchBox.Size = UDim2.new(1,0,0,30)
+            searchBox.PlaceholderText = "Search..."
+
+            local scroll = Instance.new("ScrollingFrame", drop)
+            scroll.Position = UDim2.new(0,0,0,35)
+            scroll.Size = UDim2.new(1,0,1,-35)
+            scroll.ScrollBarThickness = 2
+
+            local function refresh()
+                for _,v in ipairs(scroll:GetChildren()) do
+                    if v:IsA("TextButton") then v:Destroy() end
+                end
+
+                for _,v in ipairs(items) do
+                    if searchBox.Text == "" or string.find(string.lower(v), string.lower(searchBox.Text)) then
+                        local b = Instance.new("TextButton")
+                        b.Parent = scroll
+                        b.Size = UDim2.new(1,0,0,25)
+                        b.Text = v
+
+                        b.MouseButton1Click:Connect(function()
+                            selected = v
+                            title.Text = name .. ": " .. v
+                            drop.Visible = false
+                            if callback then callback(v) end
+                        end)
+                    end
+                end
+            end
+
+            btn.MouseButton1Click:Connect(function()
+                drop.Visible = not drop.Visible
+                refresh()
+            end)
+
+            searchBox:GetPropertyChangedSignal("Text"):Connect(refresh)
+
+            local function update()
+                items = {}
+                for _,p in ipairs(Players:GetPlayers()) do
+                    table.insert(items, p.Name)
+                end
+                refresh()
+            end
+
+            Players.PlayerAdded:Connect(update)
+            Players.PlayerRemoving:Connect(update)
+
+            update()
+        end
     -- macos style buttons
 
 
