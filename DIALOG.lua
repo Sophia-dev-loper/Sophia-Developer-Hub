@@ -38,7 +38,7 @@ bg.BackgroundTransparency = 0.4
 -- 🍎 Main Card
 local frame = Instance.new("Frame")
 frame.Parent = keyGui
-frame.Size = UDim2.new(0, 360, 0, 160)
+frame.Size = UDim2.new(0, 360, 0, 200)
 frame.Position = UDim2.new(0.5, -180, 0.5, -130)
 frame.BackgroundColor3 = Color3.fromRGB(245,245,245)
 
@@ -249,8 +249,8 @@ end)
         uc_22.Parent = splash
 
 
-
-        local sicon = Instance.new("TextLabel")
+ local sicon = Instance.new("TextLabel")  
+local sp = Instance.new("Frame")
 sicon.Name = "sicon"
 sicon.Parent = splash
 sicon.Size = UDim2.new(1, 0, 1, 0)
@@ -258,11 +258,29 @@ sicon.Position = UDim2.new(0.5, 0, 0.5, 0)
 sicon.AnchorPoint = Vector2.new(0.5, 0.5)
 sicon.BackgroundTransparency = 1
 
-sicon.Text = "SOPHIA HUB"
+sicon.Text = "SOPHIADEVELOPER"
 sicon.Font = Enum.Font.GothamBold
 sicon.TextSize = 36
 sicon.TextColor3 = Color3.fromRGB(255, 255, 255)
 sicon.TextWrapped = true
+
+          local grad = Instance.new("UIGradient")
+    grad.Parent = sp
+    grad.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), -- white
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)), -- light blue
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 255)) -- purple-ish
+    }
+    grad.Rotation = 90
+
+        task.spawn(function()
+    while splash.Parent do
+        for i = 0, 1, 0.01 do
+            grad.Rotation = i * 360
+            task.wait()
+        end
+    end
+end)
 
         local ug = Instance.new("UIGradient")
         ug.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(0.01, Color3.fromRGB(61, 61, 61)), ColorSequenceKeypoint.new(0.47, Color3.fromRGB(41, 41, 41)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))}
