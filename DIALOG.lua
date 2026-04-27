@@ -989,6 +989,7 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
     slider.TextColor3 = Color3.fromRGB(95,95,95)
     slider.TextSize = 21
     slider.TextXAlignment = Enum.TextXAlignment.Left
+    slider.Position = UDim2.new(0.0643776804, 0, 0, -2)
 
     -- bar
     local bar = Instance.new("Frame")
