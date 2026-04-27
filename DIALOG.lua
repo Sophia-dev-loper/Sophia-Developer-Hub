@@ -13,8 +13,73 @@ local function tp(ins, pos, time, thing)
 end
 
 function lib:init(ti, dosplash, visiblekey, deleteprevious)
+
+    -- =========================
+    -- 🔐 KEY SYSTEM (PLACE HERE)
+    -- =========================
+
+    local correctKey = "SophiaDeveloperHub"
+    local keyAccepted = false
+
+    local keyGui = Instance.new("ScreenGui")
+    keyGui.Name = "KeySystem"
+    keyGui.Parent = game:GetService("CoreGui")
+
+    local frame = Instance.new("Frame")
+    frame.Parent = keyGui
+    frame.Size = UDim2.new(0, 320, 0, 200)
+    frame.Position = UDim2.new(0.5, -160, 0.5, -100)
+    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+    local title = Instance.new("TextLabel")
+    title.Parent = frame
+    title.Size = UDim2.new(1,0,0,40)
+    title.BackgroundTransparency = 1
+    title.Text = "🔐 Key System"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 20
+    title.TextColor3 = Color3.fromRGB(255,255,255)
+
+    local box = Instance.new("TextBox")
+    box.Parent = frame
+    box.Size = UDim2.new(0.8,0,0,35)
+    box.Position = UDim2.new(0.1,0,0.4,0)
+    box.PlaceholderText = "Enter Key..."
+    box.Text = ""
+    box.Font = Enum.Font.Gotham
+    box.TextSize = 18
+
+    local submit = Instance.new("TextButton")
+    submit.Parent = frame
+    submit.Size = UDim2.new(0.8,0,0,35)
+    submit.Position = UDim2.new(0.1,0,0.7,0)
+    submit.Text = "Unlock"
+    submit.BackgroundColor3 = Color3.fromRGB(21,103,251)
+    submit.TextColor3 = Color3.fromRGB(255,255,255)
+    submit.Font = Enum.Font.Gotham
+
+    Instance.new("UICorner", submit).CornerRadius = UDim.new(0,8)
+
+    submit.MouseButton1Click:Connect(function()
+        if box.Text == correctKey then
+            keyAccepted = true
+            keyGui:Destroy()
+        else
+            box.Text = ""
+            box.PlaceholderText = "Wrong Key!"
+        end
+    end)
+
+    -- ⛔ BLOCK EVERYTHING UNTIL KEY IS CORRECT
+    repeat task.wait() until keyAccepted
+
+    -- =========================
+    -- AFTER THIS = YOUR UI LOADS
+    -- =========================
+    
     if syn then
-        
          cg = game:GetService("CoreGui")
         if cg:FindFirstChild("ScreenGui") and deleteprevious then
            tp(cg.ScreenGui.main, cg.ScreenGui.main.Position + UDim2.new(0,0,2,0), 0.5)
@@ -99,124 +164,6 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
         splash:TweenPosition(UDim2.new(0.5, 0, 2, 0), "InOut", "Quart", 1)
         game:GetService("Debris"):AddItem(splash, 1)
     end
-
--- =========================
--- 🔐 KEY SYSTEM (FIXED)
--- =========================
-
-local correctKey = "SophiaDeveloperHub"
-local keyAccepted = false
-
--- wait for scrgui safety
-if not scrgui then
-    repeat task.wait() until scrgui
-end
-
--- background
-local blur = Instance.new("Frame")
-blur.Parent = scrgui
-blur.Size = UDim2.new(1,0,1,0)
-blur.BackgroundColor3 = Color3.fromRGB(0,0,0)
-blur.BackgroundTransparency = 0.4
-blur.ZIndex = 100
-
--- main frame
-local keyFrame = Instance.new("Frame")
-keyFrame.Parent = scrgui
-keyFrame.Size = UDim2.new(0, 360, 0, 210)
-keyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-keyFrame.AnchorPoint = Vector2.new(0.5,0.5)
-keyFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
-keyFrame.ZIndex = 101
-
-Instance.new("UICorner", keyFrame).CornerRadius = UDim.new(0, 16)
-
--- title
-local title = Instance.new("TextLabel")
-title.Parent = keyFrame
-title.Size = UDim2.new(1,0,0,40)
-title.BackgroundTransparency = 1
-title.Text = "🔐 Key System"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 22
-title.TextColor3 = Color3.fromRGB(40,40,40)
-title.ZIndex = 102
-
--- input box
-local box = Instance.new("TextBox")
-box.Parent = keyFrame
-box.Size = UDim2.new(0.85,0,0,38)
-box.Position = UDim2.new(0.075,0,0.35,0)
-box.PlaceholderText = "Enter Key..."
-box.Text = ""
-box.Font = Enum.Font.Gotham
-box.TextSize = 16
-box.TextColor3 = Color3.fromRGB(30,30,30)
-box.BackgroundColor3 = Color3.fromRGB(240,240,240)
-box.ZIndex = 102
-
-Instance.new("UICorner", box).CornerRadius = UDim.new(0,10)
-
--- submit
-local submit = Instance.new("TextButton")
-submit.Parent = keyFrame
-submit.Size = UDim2.new(0.85,0,0,38)
-submit.Position = UDim2.new(0.075,0,0.60,0)
-submit.Text = "Verify"
-submit.Font = Enum.Font.GothamBold
-submit.TextSize = 16
-submit.TextColor3 = Color3.fromRGB(255,255,255)
-submit.BackgroundColor3 = Color3.fromRGB(21,103,251)
-submit.ZIndex = 102
-
-Instance.new("UICorner", submit).CornerRadius = UDim.new(0,10)
-
--- discord
-local discord = Instance.new("TextButton")
-discord.Parent = keyFrame
-discord.Size = UDim2.new(0.85,0,0,28)
-discord.Position = UDim2.new(0.075,0,0.83,0)
-discord.Text = "Get Key (Discord)"
-discord.Font = Enum.Font.Gotham
-discord.TextSize = 14
-discord.TextColor3 = Color3.fromRGB(255,255,255)
-discord.BackgroundColor3 = Color3.fromRGB(114,137,218)
-discord.ZIndex = 102
-
-Instance.new("UICorner", discord).CornerRadius = UDim.new(0,8)
-
-discord.MouseButton1Click:Connect(function()
-    pcall(function()
-        setclipboard("https://discord.gg/YOURSERVER")
-    end)
-end)
-
--- key check
-submit.MouseButton1Click:Connect(function()
-    if box.Text == correctKey then
-        keyAccepted = true
-
-        submit.Text = "Success!"
-        submit.BackgroundColor3 = Color3.fromRGB(0,200,120)
-
-        task.wait(0.5)
-
-        keyFrame:Destroy()
-        blur:Destroy()
-    else
-        box.Text = ""
-        box.PlaceholderText = "Wrong Key!"
-    end
-end)
-
--- WAIT SAFELY (prevents freeze bug)
-task.spawn(function()
-    while not keyAccepted do
-        task.wait()
-    end
-end)
-
-repeat task.wait() until keyAccepted
 
     
     local main = Instance.new("Frame")
