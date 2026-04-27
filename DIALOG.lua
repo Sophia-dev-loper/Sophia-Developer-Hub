@@ -209,17 +209,40 @@ repeat task.wait() until keyAccepted
     
     
 
-    if dosplash then
-        local splash = Instance.new("Frame")
-        splash.Name = "splash"
-        splash.Parent = scrgui
-        splash.AnchorPoint = Vector2.new(0.5, 0.5)
-        splash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        splash.BackgroundTransparency = 0.600
-        splash.Position = UDim2.new(0.5, 0, 2, 0)
-        splash.Size = UDim2.new(0, 340, 0, 240)
-        splash.Visible = true
-        splash.ZIndex = 40
+  if dosplash then
+    local splash = Instance.new("Frame")
+    splash.Name = "splash"
+    splash.Parent = scrgui
+    splash.AnchorPoint = Vector2.new(0.5, 0.5)
+    splash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    splash.BackgroundTransparency = 0.3
+    splash.Position = UDim2.new(0.5, 0, 2, 0)
+    splash.Size = UDim2.new(0, 340, 0, 240)
+    splash.Visible = true
+    splash.ZIndex = 40
+
+    local uc_22 = Instance.new("UICorner")
+    uc_22.CornerRadius = UDim.new(0, 18)
+    uc_22.Parent = splash
+
+    -- 🌈 GRADIENT (THIS IS THE IMPORTANT PART)
+    local grad = Instance.new("UIGradient")
+    grad.Parent = splash
+    grad.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), -- white
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 200, 255)), -- light blue
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 255)) -- purple-ish
+    }
+    grad.Rotation = 90
+
+        task.spawn(function()
+    while splash.Parent do
+        for i = 0, 1, 0.01 do
+            grad.Rotation = i * 360
+            task.wait()
+        end
+    end
+end)
 
         local uc_22 = Instance.new("UICorner")
         uc_22.CornerRadius = UDim.new(0, 18)
