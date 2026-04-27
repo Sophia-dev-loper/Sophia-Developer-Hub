@@ -1009,38 +1009,7 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
     local uic2 = Instance.new("UICorner", fill)
     uic2.CornerRadius = UDim.new(1,0)
 
-    -- drag
-    local dragging = false
-
-    bar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-        end
-    end)
-
-    bar.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local pos = (input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X
-            pos = math.clamp(pos, 0, 1)
-
-            fill.Size = UDim2.new(pos, 0, 1, 0)
-
-            value = math.floor((min + (max-min) * pos))
-            slider.Text = name .. ": " .. tostring(value)
-
-            if callback then
-                callback(value)
-            end
-        end
-    end)
-end
-
+    
             if callback then
                 TextBox.FocusLost:Connect(function()
                     callback(TextBox.Text)
