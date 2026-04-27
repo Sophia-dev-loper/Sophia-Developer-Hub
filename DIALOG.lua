@@ -977,28 +977,44 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
             TextBox.TextSize = 21
             TextBox.TextXAlignment = Enum.TextXAlignment.Left
 
-   function sec:Slider(name, min, max, default, callback)
+            if callback then
+                TextBox.FocusLost:Connect(function()
+                    callback(TextBox.Text)
+                end)
+            end
+        end
+
+        function sec:Slider(name, min, max, default, callback)
+    local UIS = game:GetService("UserInputService")
+
     local value = default or min
+    local dragging = false
 
-    local slider = Instance.new("TextLabel")
+    -- container
+    local slider = Instance.new("Frame")
     slider.Parent = workareamain
-    slider.Size = UDim2.new(0, 418, 0, 50)
+    slider.Size = UDim2.new(0, 418, 0, 60)
     slider.BackgroundTransparency = 1
-    slider.Font = Enum.Font.Gotham
-    slider.Text = name .. ": " .. tostring(value)
-    slider.TextColor3 = Color3.fromRGB(95,95,95)
-    slider.TextSize = 21
-    slider.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- bar
+    -- title
+    local label = Instance.new("TextLabel")
+    label.Parent = slider
+    label.Size = UDim2.new(1, 0, 0, 25)
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.Gotham
+    label.Text = name .. ": " .. value
+    label.TextColor3 = Color3.fromRGB(95,95,95)
+    label.TextSize = 20
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- bar background
     local bar = Instance.new("Frame")
     bar.Parent = slider
-    bar.Position = UDim2.new(0, 0, 0.6, 0)
-    bar.Size = UDim2.new(1, 0, 0, 10)
-    bar.BackgroundColor3 = Color3.fromRGB(200,200,200)
+    bar.Position = UDim2.new(0, 0, 0, 35)
+    bar.Size = UDim2.new(1, 0, 0, 8)
+    bar.BackgroundColor3 = Color3.fromRGB(220,220,220)
 
-    local uic = Instance.new("UICorner", bar)
-    uic.CornerRadius = UDim.new(1,0)
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
 
     -- fill
     local fill = Instance.new("Frame")
@@ -1006,16 +1022,58 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
     fill.Size = UDim2.new((value-min)/(max-min), 0, 1, 0)
     fill.BackgroundColor3 = Color3.fromRGB(21,103,251)
 
-    local uic2 = Instance.new("UICorner", fill)
-    uic2.CornerRadius = UDim.new(1,0)
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(1,0)
 
-    
-            if callback then
-                TextBox.FocusLost:Connect(function()
-                    callback(TextBox.Text)
-                end)
-            end
+    -- knob (IMPORTANT for better dragging)
+    local knob = Instance.new("Frame")
+    knob.Parent = bar
+    knob.Size = UDim2.new(0, 14, 0, 14)
+    knob.AnchorPoint = Vector2.new(0.5, 0.5)
+    knob.Position = UDim2.new(fill.Size.X.Scale, 0, 0.5, 0)
+    knob.BackgroundColor3 = Color3.fromRGB(21,103,251)
+
+    Instance.new("UICorner", knob).CornerRadius = UDim.new(1,0)
+
+    -- update function
+    local function update(input)
+        local pos = (input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X
+        pos = math.clamp(pos, 0, 1)
+
+        fill.Size = UDim2.new(pos, 0, 1, 0)
+        knob.Position = UDim2.new(pos, 0, 0.5, 0)
+
+        value = math.floor(min + (max - min) * pos)
+        label.Text = name .. ": " .. value
+
+        if callback then
+            callback(value)
         end
+    end
+
+    -- FIX: stop UI dragging when using slider
+    bar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 
+        or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            input:CaptureController() -- 🔥 prevents parent drag
+            update(input)
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement 
+        or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+
+    UIS.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 
+        or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+end
 
         sidebar2.MouseButton1Click:Connect(function()
             sec:Select()
