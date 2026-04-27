@@ -13,9 +13,9 @@ local function tp(ins, pos, time, thing)
 end
 
 function lib:init(ti, dosplash, visiblekey, deleteprevious)
-
-  -- =========================
--- 🍎 APPLE STYLE KEY SYSTEM
+    
+-- =========================
+-- 🍎 APPLE STYLE KEY SYSTEM (FULL)
 -- =========================
 
 local Players = game:GetService("Players")
@@ -28,7 +28,7 @@ local keyGui = Instance.new("ScreenGui")
 keyGui.Name = "KeySystem"
 keyGui.Parent = game:GetService("CoreGui")
 
--- 🌫 Background blur feel
+-- 🌫 Background
 local bg = Instance.new("Frame")
 bg.Parent = keyGui
 bg.Size = UDim2.new(1,0,1,0)
@@ -44,21 +44,46 @@ frame.BackgroundColor3 = Color3.fromRGB(245,245,245)
 
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
 
--- 👤 Profile
+-- 🖼 PROFILE PICTURE
+local thumbType = Enum.ThumbnailType.HeadShot
+local thumbSize = Enum.ThumbnailSize.Size100x100
+local content, isReady = Players:GetUserThumbnailAsync(player.UserId, thumbType, thumbSize)
+
+local profilePic = Instance.new("ImageLabel")
+profilePic.Parent = frame
+profilePic.Size = UDim2.new(0, 50, 0, 50)
+profilePic.Position = UDim2.new(0.05, 0, 0.05, 0)
+profilePic.BackgroundTransparency = 1
+profilePic.Image = content
+
+Instance.new("UICorner", profilePic).CornerRadius = UDim.new(1,0)
+
+-- 🔄 FIX thumbnail loading
+task.spawn(function()
+    while not isReady do
+        content, isReady = Players:GetUserThumbnailAsync(player.UserId, thumbType, thumbSize)
+        profilePic.Image = content
+        task.wait(0.2)
+    end
+end)
+
+-- 👤 PROFILE TEXT
 local profile = Instance.new("TextLabel")
 profile.Parent = frame
-profile.Size = UDim2.new(1,0,0,50)
+profile.Size = UDim2.new(0.7,0,0,50)
+profile.Position = UDim2.new(0.25,0,0.05,0)
 profile.BackgroundTransparency = 1
 profile.Font = Enum.Font.GothamMedium
 profile.TextSize = 16
 profile.TextColor3 = Color3.fromRGB(40,40,40)
+profile.TextXAlignment = Enum.TextXAlignment.Left
 profile.Text = "👤 "..player.Name.."  |  UID: "..player.UserId
 
 -- 🔐 Title
 local title = Instance.new("TextLabel")
 title.Parent = frame
 title.Size = UDim2.new(1,0,0,40)
-title.Position = UDim2.new(0,0,0.2,0)
+title.Position = UDim2.new(0,0,0.25,0)
 title.BackgroundTransparency = 1
 title.Text = "Enter Access Key"
 title.Font = Enum.Font.GothamBold
@@ -93,7 +118,7 @@ errorLabel.TextSize = 14
 local submit = Instance.new("TextButton")
 submit.Parent = frame
 submit.Size = UDim2.new(0.4,0,0,40)
-submit.Position = UDim2.new(0.08,0,0.75,0)
+submit.Position = UDim2.new(0.08,0,0.78,0)
 submit.Text = "Unlock"
 submit.BackgroundColor3 = Color3.fromRGB(0,122,255)
 submit.TextColor3 = Color3.fromRGB(255,255,255)
@@ -105,7 +130,7 @@ Instance.new("UICorner", submit).CornerRadius = UDim.new(0,12)
 local discord = Instance.new("TextButton")
 discord.Parent = frame
 discord.Size = UDim2.new(0.4,0,0,40)
-discord.Position = UDim2.new(0.52,0,0.75,0)
+discord.Position = UDim2.new(0.52,0,0.78,0)
 discord.Text = "Get Key"
 discord.BackgroundColor3 = Color3.fromRGB(88,101,242)
 discord.TextColor3 = Color3.fromRGB(255,255,255)
@@ -115,7 +140,7 @@ Instance.new("UICorner", discord).CornerRadius = UDim.new(0,12)
 
 -- 🔗 Discord action
 discord.MouseButton1Click:Connect(function()
-    setclipboard("https://discord.gg/YOUR_LINK_HERE")
+    setclipboard("https://discord.gg/YOUR_LINK_HERE") -- 🔥 replace this
     errorLabel.Text = "Discord link copied!"
 end)
 
@@ -130,7 +155,7 @@ submit.MouseButton1Click:Connect(function()
     end
 end)
 
--- ⛔ WAIT
+-- ⛔ WAIT UNTIL CORRECT
 repeat task.wait() until keyAccepted
     -- =========================
     -- AFTER THIS = YOUR UI LOADS
