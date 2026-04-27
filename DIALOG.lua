@@ -988,19 +988,17 @@ end)
             end
         end
 
-        function sec:Slider(name, min, max, default, callback)
+      function sec:Slider(name, min, max, default, callback)
     local UIS = game:GetService("UserInputService")
 
     local value = default or min
     local dragging = false
 
-    -- container
     local slider = Instance.new("Frame")
     slider.Parent = workareamain
     slider.Size = UDim2.new(0, 418, 0, 60)
     slider.BackgroundTransparency = 1
 
-    -- title
     local label = Instance.new("TextLabel")
     label.Parent = slider
     label.Size = UDim2.new(1, 0, 0, 25)
@@ -1011,7 +1009,6 @@ end)
     label.TextSize = 20
     label.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- bar background
     local bar = Instance.new("Frame")
     bar.Parent = slider
     bar.Position = UDim2.new(0, 0, 0, 35)
@@ -1020,7 +1017,6 @@ end)
 
     Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
 
-    -- fill
     local fill = Instance.new("Frame")
     fill.Parent = bar
     fill.Size = UDim2.new((value-min)/(max-min), 0, 1, 0)
@@ -1028,7 +1024,6 @@ end)
 
     Instance.new("UICorner", fill).CornerRadius = UDim.new(1,0)
 
-    -- knob (IMPORTANT for better dragging)
     local knob = Instance.new("Frame")
     knob.Parent = bar
     knob.Size = UDim2.new(0, 14, 0, 14)
@@ -1038,7 +1033,6 @@ end)
 
     Instance.new("UICorner", knob).CornerRadius = UDim.new(1,0)
 
-    -- update function
     local function update(input)
         local pos = (input.Position.X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X
         pos = math.clamp(pos, 0, 1)
@@ -1054,30 +1048,25 @@ end)
         end
     end
 
-    -- FIX: stop UI dragging when using slider
     bar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 
-    or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        isSliding = true -- 🔥 LOCK GUI DRAG
-        update(input)
-    end
-end)
-
-    UIS.InputChanged:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement 
-        or input.UserInputType == Enum.UserInputType.Touch) then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
             update(input)
         end
     end)
 
-   UIS.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 
-    or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = false
-        isSliding = false -- 🔥 UNLOCK GUI DRAG
-    end
-end)
+    UIS.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            update(input)
+        end
+    end)
+
+    UIS.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+end
 
         sidebar2.MouseButton1Click:Connect(function()
             sec:Select()
