@@ -208,22 +208,70 @@ repeat task.wait() until keyAccepted
     
     
     
+if dosplash then
+    local TweenService = game:GetService("TweenService")
 
-    if dosplash then
-        local splash = Instance.new("Frame")
-        splash.Name = "splash"
-        splash.Parent = scrgui
-        splash.AnchorPoint = Vector2.new(0.5, 0.5)
-        splash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        splash.BackgroundTransparency = 0.600
-        splash.Position = UDim2.new(0.5, 0, 2, 0)
-        splash.Size = UDim2.new(0, 340, 0, 140)
-        splash.Visible = true
-        splash.ZIndex = 40
+    local splash = Instance.new("Frame")
+    splash.Name = "splash"
+    splash.Parent = scrgui
+    splash.AnchorPoint = Vector2.new(0.5, 0.5)
+    splash.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    splash.BackgroundTransparency = 0.2
+    splash.Position = UDim2.new(0.5, 0, 0.5, 0)
+    splash.Size = UDim2.new(0, 0, 0, 0) -- start small
+    splash.ZIndex = 40
 
-        local uc_22 = Instance.new("UICorner")
-        uc_22.CornerRadius = UDim.new(0, 18)
-        uc_22.Parent = splash
+    local uc = Instance.new("UICorner")
+    uc.CornerRadius = UDim.new(0, 18)
+    uc.Parent = splash
+
+    local title = Instance.new("TextLabel")
+    title.Parent = splash
+    title.Size = UDim2.new(1, 0, 1, 0)
+    title.BackgroundTransparency = 1
+    title.Text = ""
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 34
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.ZIndex = 41
+
+    -- ✨ POP IN ANIMATION (scale up)
+    TweenService:Create(splash, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 340, 0, 140)
+    }):Play()
+
+    task.wait(0.25)
+
+    -- ✍️ TYPE EFFECT TEXT
+    local text = "SOPHIA HUB"
+    for i = 1, #text do
+        title.Text = string.sub(text, 1, i)
+        task.wait(0.05)
+    end
+
+    -- ✨ glow pulse effect
+    for i = 1, 2 do
+        title.TextSize = 34
+        TweenService:Create(title, TweenInfo.new(0.2), {TextTransparency = 0.2}):Play()
+        task.wait(0.2)
+        TweenService:Create(title, TweenInfo.new(0.2), {TextTransparency = 0}):Play()
+        task.wait(0.2)
+    end
+
+    task.wait(1.2)
+
+    -- 👋 EXIT ANIMATION
+    TweenService:Create(splash, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1
+    }):Play()
+
+    TweenService:Create(title, TweenInfo.new(0.3), {
+        TextTransparency = 1
+    }):Play()
+
+    game:GetService("Debris"):AddItem(splash, 1)
+end
 
         local sicon = Instance.new("TextLabel")
 sicon.Name = "sicon"
