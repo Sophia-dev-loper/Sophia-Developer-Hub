@@ -38,7 +38,7 @@ bg.BackgroundTransparency = 0.4
 -- 🍎 Main Card
 local frame = Instance.new("Frame")
 frame.Parent = keyGui
-frame.Size = UDim2.new(0, 360, 0, 260)
+frame.Size = UDim2.new(0, 400, 0, 260)
 frame.Position = UDim2.new(0.5, -180, 0.5, -130)
 frame.BackgroundColor3 = Color3.fromRGB(245,245,245)
 
@@ -87,7 +87,7 @@ profile.Size = UDim2.new(0.7,0,0,50)
 profile.Position = UDim2.new(0.25,0,0.05,0)
 profile.BackgroundTransparency = 1
 profile.Font = Enum.Font.GothamMedium
-profile.TextSize = 16
+profile.TextSize = 10
 profile.TextColor3 = Color3.fromRGB(40,40,40)
 profile.TextXAlignment = Enum.TextXAlignment.Left
 profile.Text = "👤 "..player.Name.."  |  UID: "..player.UserId
