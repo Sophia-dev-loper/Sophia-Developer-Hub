@@ -217,7 +217,7 @@ repeat task.wait() until keyAccepted
         splash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         splash.BackgroundTransparency = 0.600
         splash.Position = UDim2.new(0.5, 0, 2, 0)
-        splash.Size = UDim2.new(0, 340, 0, 340)
+        splash.Size = UDim2.new(0, 240, 0, 340)
         splash.Visible = true
         splash.ZIndex = 40
 
