@@ -381,6 +381,115 @@ end)
         searchtextbox:CaptureFocus()
     end)
 
+   -- drapdowm
+    function sec:Dropdown(name, list, callback)
+    local Players = game:GetService("Players")
+
+    local selected = nil
+    local items = list or {}
+
+    local dropdown = Instance.new("Frame")
+    dropdown.Parent = workareamain
+    dropdown.Size = UDim2.new(0, 418, 0, 60)
+    dropdown.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel")
+    label.Parent = dropdown
+    label.Size = UDim2.new(1, 0, 0, 25)
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.Gotham
+    label.Text = name .. ": None"
+    label.TextColor3 = Color3.fromRGB(95,95,95)
+    label.TextSize = 20
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local box = Instance.new("TextBox")
+    box.Parent = dropdown
+    box.Position = UDim2.new(0, 0, 0, 30)
+    box.Size = UDim2.new(1, 0, 0, 30)
+    box.PlaceholderText = "Search player..."
+    box.Text = ""
+    box.Font = Enum.Font.Gotham
+    box.TextSize = 18
+    box.BackgroundColor3 = Color3.fromRGB(240,240,240)
+    box.TextColor3 = Color3.fromRGB(0,0,0)
+
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0,8)
+
+    local listFrame = Instance.new("ScrollingFrame")
+    listFrame.Parent = dropdown
+    listFrame.Position = UDim2.new(0, 0, 0, 65)
+    listFrame.Size = UDim2.new(1, 0, 0, 120)
+    listFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    listFrame.Visible = false
+    listFrame.CanvasSize = UDim2.new(0,0,0,0)
+    listFrame.ScrollBarThickness = 4
+
+    Instance.new("UICorner", listFrame).CornerRadius = UDim.new(0,8)
+
+    local layout = Instance.new("UIListLayout", listFrame)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local function refreshList(filter)
+        listFrame:ClearAllChildren()
+        layout.Parent = listFrame
+
+        local count = 0
+
+        for _,v in pairs(items) do
+            if filter == "" or string.find(string.lower(v), string.lower(filter)) then
+                count += 1
+
+                local btn = Instance.new("TextButton")
+                btn.Parent = listFrame
+                btn.Size = UDim2.new(1,0,0,30)
+                btn.Text = v
+                btn.Font = Enum.Font.Gotham
+                btn.TextSize = 18
+                btn.BackgroundTransparency = 1
+                btn.TextColor3 = Color3.fromRGB(50,50,50)
+
+                btn.MouseButton1Click:Connect(function()
+                    selected = v
+                    label.Text = name .. ": " .. v
+                    listFrame.Visible = false
+
+                    if callback then
+                        callback(v)
+                    end
+                end)
+            end
+        end
+
+        listFrame.CanvasSize = UDim2.new(0,0,0,count*30)
+    end
+
+    -- toggle dropdown
+    box.Focused:Connect(function()
+        listFrame.Visible = true
+        refreshList(box.Text)
+    end)
+
+    box:GetPropertyChangedSignal("Text"):Connect(function()
+        refreshList(box.Text)
+    end)
+
+    -- 🔥 AUTO PLAYER UPDATE
+    local function updatePlayers()
+        items = {}
+        for _,plr in pairs(Players:GetPlayers()) do
+            table.insert(items, plr.Name)
+        end
+        refreshList(box.Text)
+    end
+
+    Players.PlayerAdded:Connect(updatePlayers)
+    Players.PlayerRemoving:Connect(updatePlayers)
+
+    updatePlayers() -- initial load
+end
+
+    
     -- sidebar
 
     local sidebar = Instance.new("ScrollingFrame")
