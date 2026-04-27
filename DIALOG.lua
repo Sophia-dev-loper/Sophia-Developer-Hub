@@ -38,7 +38,7 @@ bg.BackgroundTransparency = 0.4
 -- 🍎 Main Card
 local frame = Instance.new("Frame")
 frame.Parent = keyGui
-frame.Size = UDim2.new(0, 360, 0, 260)
+frame.Size = UDim2.new(0, 360, 0, 160)
 frame.Position = UDim2.new(0.5, -180, 0.5, -130)
 frame.BackgroundColor3 = Color3.fromRGB(245,245,245)
 
