@@ -100,107 +100,88 @@ function lib:init(ti, dosplash, visiblekey, deleteprevious)
         game:GetService("Debris"):AddItem(splash, 1)
     end
 
- -- =========================
--- 🔐 SOPHIA KEY SYSTEM UI
+-- =========================
+-- 🔐 KEY SYSTEM (FIXED)
 -- =========================
 
 local correctKey = "SophiaDeveloperHub"
 local keyAccepted = false
 
--- overlay (dark background like your notif system)
+-- wait for scrgui safety
+if not scrgui then
+    repeat task.wait() until scrgui
+end
+
+-- background
 local blur = Instance.new("Frame")
 blur.Parent = scrgui
 blur.Size = UDim2.new(1,0,1,0)
 blur.BackgroundColor3 = Color3.fromRGB(0,0,0)
-blur.BackgroundTransparency = 0.5
+blur.BackgroundTransparency = 0.4
+blur.ZIndex = 100
 
--- main card
+-- main frame
 local keyFrame = Instance.new("Frame")
 keyFrame.Parent = scrgui
-keyFrame.Size = UDim2.new(0, 360, 0, 220)
-keyFrame.Position = UDim2.new(0.5, -180, 0.5, -110)
+keyFrame.Size = UDim2.new(0, 360, 0, 210)
+keyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+keyFrame.AnchorPoint = Vector2.new(0.5,0.5)
 keyFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+keyFrame.ZIndex = 101
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 18)
-corner.Parent = keyFrame
-
--- shadow (like your notif style)
-local shadow = Instance.new("ImageLabel")
-shadow.Parent = keyFrame
-shadow.AnchorPoint = Vector2.new(0.5,0.5)
-shadow.Position = UDim2.new(0.5,0,0.5,0)
-shadow.Size = UDim2.new(1.2,0,1.2,0)
-shadow.BackgroundTransparency = 1
-shadow.Image = "rbxassetid://313486536"
-shadow.ImageColor3 = Color3.fromRGB(0,0,0)
-shadow.ImageTransparency = 0.4
-shadow.ZIndex = 0
+Instance.new("UICorner", keyFrame).CornerRadius = UDim.new(0, 16)
 
 -- title
 local title = Instance.new("TextLabel")
 title.Parent = keyFrame
-title.Size = UDim2.new(1,0,0,45)
+title.Size = UDim2.new(1,0,0,40)
 title.BackgroundTransparency = 1
-title.Text = "🔐 Key Verification"
+title.Text = "🔐 Key System"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 24
+title.TextSize = 22
 title.TextColor3 = Color3.fromRGB(40,40,40)
+title.ZIndex = 102
 
--- subtitle
-local desc = Instance.new("TextLabel")
-desc.Parent = keyFrame
-desc.Size = UDim2.new(1,0,0,30)
-desc.Position = UDim2.new(0,0,0.18,0)
-desc.BackgroundTransparency = 1
-desc.Text = "Enter your access key to continue"
-desc.Font = Enum.Font.Gotham
-desc.TextSize = 14
-desc.TextColor3 = Color3.fromRGB(120,120,120)
-
--- textbox container
-local boxFrame = Instance.new("Frame")
-boxFrame.Parent = keyFrame
-boxFrame.Size = UDim2.new(0.85,0,0,38)
-boxFrame.Position = UDim2.new(0.075,0,0.45,0)
-boxFrame.BackgroundColor3 = Color3.fromRGB(240,240,240)
-
-Instance.new("UICorner", boxFrame).CornerRadius = UDim.new(0,10)
-
+-- input box
 local box = Instance.new("TextBox")
-box.Parent = boxFrame
-box.Size = UDim2.new(1,-10,1,0)
-box.Position = UDim2.new(0,5,0,0)
-box.BackgroundTransparency = 1
-box.Text = ""
+box.Parent = keyFrame
+box.Size = UDim2.new(0.85,0,0,38)
+box.Position = UDim2.new(0.075,0,0.35,0)
 box.PlaceholderText = "Enter Key..."
+box.Text = ""
 box.Font = Enum.Font.Gotham
 box.TextSize = 16
 box.TextColor3 = Color3.fromRGB(30,30,30)
+box.BackgroundColor3 = Color3.fromRGB(240,240,240)
+box.ZIndex = 102
 
--- submit button
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,10)
+
+-- submit
 local submit = Instance.new("TextButton")
 submit.Parent = keyFrame
 submit.Size = UDim2.new(0.85,0,0,38)
-submit.Position = UDim2.new(0.075,0,0.65,0)
-submit.Text = "Verify Key"
+submit.Position = UDim2.new(0.075,0,0.60,0)
+submit.Text = "Verify"
 submit.Font = Enum.Font.GothamBold
 submit.TextSize = 16
 submit.TextColor3 = Color3.fromRGB(255,255,255)
 submit.BackgroundColor3 = Color3.fromRGB(21,103,251)
+submit.ZIndex = 102
 
 Instance.new("UICorner", submit).CornerRadius = UDim.new(0,10)
 
--- discord button
+-- discord
 local discord = Instance.new("TextButton")
 discord.Parent = keyFrame
 discord.Size = UDim2.new(0.85,0,0,28)
 discord.Position = UDim2.new(0.075,0,0.83,0)
-discord.Text = "Get Key from Discord"
+discord.Text = "Get Key (Discord)"
 discord.Font = Enum.Font.Gotham
 discord.TextSize = 14
 discord.TextColor3 = Color3.fromRGB(255,255,255)
 discord.BackgroundColor3 = Color3.fromRGB(114,137,218)
+discord.ZIndex = 102
 
 Instance.new("UICorner", discord).CornerRadius = UDim.new(0,8)
 
@@ -210,7 +191,7 @@ discord.MouseButton1Click:Connect(function()
     end)
 end)
 
--- check key
+-- key check
 submit.MouseButton1Click:Connect(function()
     if box.Text == correctKey then
         keyAccepted = true
@@ -219,19 +200,22 @@ submit.MouseButton1Click:Connect(function()
         submit.BackgroundColor3 = Color3.fromRGB(0,200,120)
 
         task.wait(0.5)
+
         keyFrame:Destroy()
         blur:Destroy()
     else
         box.Text = ""
         box.PlaceholderText = "Wrong Key!"
-        submit.BackgroundColor3 = Color3.fromRGB(255,80,80)
-
-        task.wait(0.5)
-        submit.BackgroundColor3 = Color3.fromRGB(21,103,251)
     end
 end)
 
--- wait lock
+-- WAIT SAFELY (prevents freeze bug)
+task.spawn(function()
+    while not keyAccepted do
+        task.wait()
+    end
+end)
+
 repeat task.wait() until keyAccepted
 
     
